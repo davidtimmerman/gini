@@ -129,8 +129,6 @@ public class PropertiesUtil {
         return result.toString();
     }
 
-
-
     private class Replacement{
         int start;
         int end;
