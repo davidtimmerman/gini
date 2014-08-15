@@ -33,3 +33,5 @@ or method injection
         this.aValue = aValue;
     }
 ```
+
+[![endorse](https://api.coderwall.com/davidtimmerman/endorsecount.png)](https://coderwall.com/davidtimmerman)
