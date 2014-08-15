@@ -1,10 +1,10 @@
 Gini
 ====
 
-Lightweight extension for Guice to conveniently injecting properties.
+Lightweight extension for Guice to conveniently inject properties.
 
-**Documentation**: [Wiki] (https://github.com/davidtimmerman/gini/wiki)
-**License**: [Apache v 2.0] (http://www.apache.org/licenses/LICENSE-2.0)
+- **Documentation**: [Wiki] (https://github.com/davidtimmerman/gini/wiki)
+- **License**: [Apache v 2.0] (http://www.apache.org/licenses/LICENSE-2.0)
 
 #Quick start
 
