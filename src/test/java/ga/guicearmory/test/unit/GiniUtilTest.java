@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import java.lang.annotation.Annotation;
 import java.util.Properties;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -26,47 +27,10 @@ public class GiniUtilTest {
     }
 
     @Test
-    public void tester(){
-        Properties props = new Properties();
-        props.put("env","dev");
-        props.put("filename","guicearmory");
+    public void expressionTest(){
 
-        new Expectations()
-        {
-            @Mocked("getenv") System mockedSystem;
-
-            {
-                System.getenv("env"); returns("dev");
-                System.getenv("filename"); returns("guicearmory");
-
-            }
-        };
-
-        String input = "${env}/${filename}.properties";
-        PropertiesUtil h = new PropertiesUtil();
-        System.out.println(h.resolveExpression(input));
-        assertTrue(true);
+        String input = "${env}/test.properties";
+        PropertiesUtil util = new PropertiesUtil();
+        assertEquals("test/test.properties",util.resolveExpression(input));
     }
-
-
-
-
-    @Test
-    public void resolvePropertySourceTest(){
-        PropertiesUtil helper = new PropertiesUtil();
-        PropertySource propertySource = new PropertySource(){
-            @Override
-            public String value() {
-                return "file:src/main/resources/dev/guicearmory.properties";
-            }
-
-            @Override
-            public Class<? extends Annotation> annotationType() {
-                return null;
-            }
-        };
-        assertNotNull(helper.getProperties(propertySource));
-
-    }
-
 }
