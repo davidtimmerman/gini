@@ -8,17 +8,18 @@ import ga.guicearmory.test.module.EnvironmentPropertiesTestModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(GuiceJUnitRunner.class)
 @GuiceModules({ EnvironmentPropertiesTestModule.class })
 public class EnvironmentPropertiesTest {
 
-    @Inject @Property("NUMBER_OF_PROCESSORS") String nrOfProcessors;
+    @Inject @Property("env") String env;
 
     @Test
     public void bindEnvironmentPropertyTest(){
 
-        assertNotNull(nrOfProcessors);
+        assertEquals("test", env);
     }
 }
