@@ -5,6 +5,7 @@ Lightweight extension for Guice to conveniently inject properties.
 
 - **Documentation**: [Wiki] (https://github.com/davidtimmerman/gini/wiki)
 - **License**: [Apache v 2.0] (http://www.apache.org/licenses/LICENSE-2.0)
+- **Build**: [![Build Status](https://travis-ci.org/davidtimmerman/gini.svg?branch=master)](https://travis-ci.org/davidtimmerman/gini)
 
 #Quick start
 
@@ -33,5 +34,5 @@ or method injection
         this.aValue = aValue;
     }
 ```
-
+---
 [![endorse](https://api.coderwall.com/davidtimmerman/endorsecount.png)](https://coderwall.com/davidtimmerman)
