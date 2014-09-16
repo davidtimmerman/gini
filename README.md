@@ -1,11 +1,12 @@
-Gini
+![gini](http://gini-guicearmory.rhcloud.com/images/gini_s.png)
 ====
 
 Lightweight extension for Guice to conveniently inject properties.
 
-- **Documentation**: [Wiki] (https://github.com/davidtimmerman/gini/wiki)
+- **Documentation**: [Site] (http://guicearmory.ga)
 - **License**: [Apache v 2.0] (http://www.apache.org/licenses/LICENSE-2.0)
 - **Build**: [![Build Status](https://travis-ci.org/davidtimmerman/gini.svg?branch=master)](https://travis-ci.org/davidtimmerman/gini)
+- **Version**: 1.0
 
 #Quick start
 
