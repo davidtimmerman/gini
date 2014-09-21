@@ -21,24 +21,24 @@ public class GiniModule extends AbstractModule {
 
         PropertiesUtil util = new PropertiesUtil();
         Properties properties = new Properties();
-        Class obj  = this.getClass();
+        Class gini  = this.getClass();
 
-        if(obj.isAnnotationPresent(BindSystemProperties.class)){
-            Annotation annotation = obj.getAnnotation(BindSystemProperties.class);
+        if(gini.isAnnotationPresent(BindSystemProperties.class)){
+            Annotation annotation = gini.getAnnotation(BindSystemProperties.class);
             BindSystemProperties bindSystemProperties = (BindSystemProperties) annotation;
             properties = util.getProperties(bindSystemProperties);
         }
-        if(obj.isAnnotationPresent(BindEnvironmentProperties.class)){
-            Annotation annotation = obj.getAnnotation(BindEnvironmentProperties.class);
+        if(gini.isAnnotationPresent(BindEnvironmentProperties.class)){
+            Annotation annotation = gini.getAnnotation(BindEnvironmentProperties.class);
             BindEnvironmentProperties bindEnvironmentProperties = (BindEnvironmentProperties) annotation;
             properties = util.getProperties(bindEnvironmentProperties);
         }
-        if(obj.isAnnotationPresent(PropertySources.class)){
-            PropertySources sources = (PropertySources) obj.getAnnotation(PropertySources.class);
+        if(gini.isAnnotationPresent(PropertySources.class)){
+            PropertySources sources = (PropertySources) gini.getAnnotation(PropertySources.class);
             properties.putAll(util.getProperties(sources));
         }
-        else if (obj.isAnnotationPresent(PropertySource.class)) {
-            Annotation annotation = obj.getAnnotation(PropertySource.class);
+        else if (gini.isAnnotationPresent(PropertySource.class)) {
+            Annotation annotation = gini.getAnnotation(PropertySource.class);
             PropertySource source = (PropertySource) annotation;
             properties.putAll(util.getProperties(source));
         }
@@ -60,7 +60,7 @@ public class GiniModule extends AbstractModule {
                             .annotatedWith(new PropertyImpl(key))
                             .toInstance(d);
                 } catch (ParseException e1) {
-                    //not a date
+                    LOGGER.severe("key: "+key+" value: "+value+"; Parsing date threw an exception, property not bound");
                 }
                 ClassLoader classLoader = this.getClass().getClassLoader();
                 try {
