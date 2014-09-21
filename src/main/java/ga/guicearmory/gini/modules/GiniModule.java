@@ -1,13 +1,13 @@
 package ga.guicearmory.gini.modules;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
-import ga.guicearmory.gini.util.PropertiesUtil;
 import ga.guicearmory.gini.annotations.*;
+import ga.guicearmory.gini.util.PropertiesUtil;
 
 import java.lang.annotation.Annotation;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -31,12 +31,6 @@ public class GiniModule extends AbstractModule {
         if(obj.isAnnotationPresent(BindEnvironmentProperties.class)){
             Annotation annotation = obj.getAnnotation(BindEnvironmentProperties.class);
             BindEnvironmentProperties bindEnvironmentProperties = (BindEnvironmentProperties) annotation;
-            //Set<String> envPropKeys = System.getenv().keySet();
- /*           for(String key : envPropKeys){
-                if(properties.containsKey(key)){
-                    LOGGER.warning("System property with key: "+key+ " is overwritten by Environment property with same key" );
-                }
-            }*/
             properties = util.getProperties(bindEnvironmentProperties);
         }
         if(obj.isAnnotationPresent(PropertySources.class)){
@@ -54,26 +48,49 @@ public class GiniModule extends AbstractModule {
             String key = (String) e.nextElement();
             String value = properties.getProperty(key);
 
-            bindConstant().annotatedWith(new PropertyImpl(key)).to(value);
-            LOGGER.info("Property "+ value + " is bound to key: "+key);
+            if(value.startsWith("date:")){
+                int start = value.indexOf('[')+1;
+                int end = value.indexOf(']');
+                String date = value.substring(end+1);
+                String dateFormat = value.substring(start,end);
+                SimpleDateFormat df = new SimpleDateFormat(dateFormat);
+                try {
+                    Date d = df.parse(date);
+                    bind(Date.class)
+                            .annotatedWith(new PropertyImpl(key))
+                            .toInstance(d);
+                } catch (ParseException e1) {
+                    //not a date
+                }
+                ClassLoader classLoader = this.getClass().getClassLoader();
+                try {
+                    // is joda time on classpath?
+                    classLoader.loadClass("org.joda.time.DateTime");
 
+                    org.joda.time.DateTime dateTime  = org.joda.time.DateTime.parse(date, org.joda.time.format.DateTimeFormat.forPattern(dateFormat));
+                    bind(org.joda.time.DateTime.class)
+                            .annotatedWith(new PropertyImpl(key))
+                            .toInstance(dateTime);
+                } catch (ClassNotFoundException ex) {
+                    LOGGER.info("Joda Time not found on classpath - not binding to DateTime");
+                }
 
+                bind(String.class)
+                        .annotatedWith(new PropertyImpl(key))
+                        .toInstance(date);
 
-        }
-
-
-        }
-
-    @Provides
-    URI provideURI(String s){
-        try {
-            if(s==null){
-                s="http://java.sun.com/j2se/1.3/";
             }
-            return new URI(s);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+            else if(value.startsWith("uri:")){
+                //TODO implement this
+            }
+            else if(value.startsWith("file:")){
+                //TODO implement this
+            }
+            else{
+                bindConstant().annotatedWith(new PropertyImpl(key)).to(value);
+            }
+
+            LOGGER.info("Property value:"+ value + " is bound to key: "+key);
         }
-        return null;
     }
 }
