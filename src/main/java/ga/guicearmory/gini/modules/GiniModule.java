@@ -5,6 +5,8 @@ import ga.guicearmory.gini.annotations.*;
 import ga.guicearmory.gini.util.PropertiesUtil;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -64,13 +66,29 @@ public class GiniModule extends AbstractModule {
                 }
                 ClassLoader classLoader = this.getClass().getClassLoader();
                 try {
-                    // is joda time on classpath?
-                    classLoader.loadClass("org.joda.time.DateTime");
+                    /*
+                    load joda classes via reflection
+                    if joda is not on the classpath this silently fails
+                     */
+                    Class DateTime = classLoader.loadClass("org.joda.time.DateTime");
+                    Class DateTimeFormat = classLoader.loadClass("org.joda.time.format.DateTimeFormat");
+                    Class DateTimeFormatter = classLoader.loadClass("org.joda.time.format.DateTimeFormatter");
+                    try {
+                        Method parse = DateTime.getDeclaredMethod("parse",String.class,DateTimeFormatter);
+                        Method forPattern = DateTimeFormat.getMethod("forPattern",String.class);
+                        Object o  = parse.invoke(null, new Object[] {date, DateTimeFormatter.cast(forPattern.invoke(null, new Object[] {dateFormat}))});
+                        bind(DateTime)
+                                .annotatedWith(new PropertyImpl(key))
+                                .toInstance(DateTime.cast(o));
+                    } catch (NoSuchMethodException e1) {
+                        e1.printStackTrace();
+                    } catch (InvocationTargetException e1) {
+                        e1.printStackTrace();
+                    } catch (IllegalAccessException e1) {
+                        e1.printStackTrace();
+                    }
 
-                    org.joda.time.DateTime dateTime  = org.joda.time.DateTime.parse(date, org.joda.time.format.DateTimeFormat.forPattern(dateFormat));
-                    bind(org.joda.time.DateTime.class)
-                            .annotatedWith(new PropertyImpl(key))
-                            .toInstance(dateTime);
+
                 } catch (ClassNotFoundException ex) {
                     LOGGER.info("Joda Time not found on classpath - not binding to DateTime");
                 }
