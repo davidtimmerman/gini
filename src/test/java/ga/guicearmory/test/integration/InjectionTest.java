@@ -11,11 +11,14 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(GuiceJUnitRunner.class)
 @GuiceModules({ InjectionTestModule.class })
@@ -34,6 +37,8 @@ public class InjectionTest {
 
     @Inject @Property("test.key.date2") Date date2;
     @Inject @Property("test.key.date2") DateTime dateTime2;
+
+    @Inject @Property("test.key.uri") URI aUri;
 
     @Test
     public void injectPrimitiveTest(){
@@ -64,11 +69,20 @@ public class InjectionTest {
     }
 
     @Test
-    public void jodaDateTest() {
+    public void injectJodaDateTest() {
         DateTime date = new DateTime(2015,01,01,00,00);
         assertEquals(dateTime,date);
 
         DateTime date2 = DateTime.parse("2014-12-30T12:08:56.111-0700", DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
         assertEquals(dateTime2,date2);
+    }
+
+    @Test
+    public void injectURITest() throws URISyntaxException {
+        URI uri = new URI("http://stacktrace.tk");
+
+        assertEquals(uri, aUri);
+        assertNotNull(aUri.getHost());
+        assertNotNull(aUri.getRawPath());
     }
 }

@@ -1,12 +1,17 @@
 package ga.guicearmory.gini.modules;
 
 import com.google.inject.AbstractModule;
+import com.sun.jndi.toolkit.url.Uri;
 import ga.guicearmory.gini.annotations.*;
 import ga.guicearmory.gini.util.PropertiesUtil;
 
+import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -99,10 +104,31 @@ public class GiniModule extends AbstractModule {
 
             }
             else if(value.startsWith("uri:")){
-                //TODO implement this
+                int end = value.indexOf(':');
+                String val = value.substring(end+1);
+
+                try {
+                    URI uri = new URI(val);
+
+                    bind(URI.class)
+                            .annotatedWith(new PropertyImpl(key))
+                            .toInstance(uri);
+                } catch (URISyntaxException e1) {
+                    e1.printStackTrace();
+                }
+
             }
-            else if(value.startsWith("file:")){
-                //TODO implement this
+            else if(value.startsWith("dir:")){
+
+                int end = value.indexOf(':');
+                String path = value.substring(end+1);
+
+                File file = new File(path);
+                if(!file.exists()) {
+                    file.mkdirs();
+                }
+
+                bind(File.class).annotatedWith(new PropertyImpl(key)).toInstance(file);
             }
             else{
                 bindConstant().annotatedWith(new PropertyImpl(key)).to(value);
