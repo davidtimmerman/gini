@@ -3,6 +3,7 @@ package ga.guicearmory.gini.modules;
 import com.google.inject.AbstractModule;
 import com.sun.jndi.toolkit.url.Uri;
 import ga.guicearmory.gini.annotations.*;
+import ga.guicearmory.gini.util.Gini;
 import ga.guicearmory.gini.util.PropertiesUtil;
 
 import java.io.File;
@@ -136,5 +137,7 @@ public class GiniModule extends AbstractModule {
 
             LOGGER.info("Property value:"+ value + " is bound to key: "+key);
         }
+
+        requestStaticInjection(Gini.class);
     }
 }

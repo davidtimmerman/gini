@@ -1,6 +1,7 @@
 package ga.guicearmory.test.integration;
 
 import ga.guicearmory.gini.annotations.Property;
+import ga.guicearmory.gini.util.Gini;
 import ga.guicearmory.test.module.InjectionTestModule;
 import ga.guicearmory.test.runner.GuiceJUnitRunner;
 import ga.guicearmory.test.runner.GuiceModules;
@@ -75,6 +76,11 @@ public class InjectionTest {
 
         DateTime date2 = DateTime.parse("2014-12-30T12:08:56.111-0700", DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
         assertEquals(dateTime2,date2);
+    }
+
+    @Test
+    public void staticGiniInjectionTest(){
+        assertEquals("gini", Gini.getProperty(String.class, "test." + "key." + "3"));
     }
 
     @Test
